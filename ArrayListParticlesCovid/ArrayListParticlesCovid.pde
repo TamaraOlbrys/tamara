@@ -22,8 +22,8 @@ void draw() {
   for (Particle p1 : particles) 
     for (Particle p2 : particles) {
       if (p1.position.dist(p2.position) < 12) { 
-        if (p1.covid) p2.covid = p1.covid; 
-        else if (p2.covid) p1.covid = p2.covid;
+        if (p1.covid)  p2.covid = p1.covid; 
+        else if (p2.covid)   p1.covid = p2.covid;
       }
     }
 }
