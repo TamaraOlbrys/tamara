@@ -1,2 +1,3 @@
 # tamara
-praca dyplomowa
+Praca dyplomowa
+Symulacja
