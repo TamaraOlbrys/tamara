@@ -12,7 +12,9 @@ class Particle {
     acceleration = new PVector(random(-0.15, 0.15), random(-0.15, 0.15));
     velocity = new PVector(0, 0);
     position = l.copy();
-    lifespan = 255.0;
+    //max dlugosc rzycia
+    lifespan = 255;
+    //jak szybko sie ztarzeje
     lifeDecline = random(0.1, 1.0);
   }
 
@@ -27,7 +29,10 @@ class Particle {
     position.add(velocity);
     if (position.x < 0 || position.x > width) velocity.x = -velocity.x;  
     if (position.y < 0 || position.y > height) velocity.y = -velocity.y;  
-    if(covid) lifespan -= lifeDecline*5 ;else lifespan -= lifeDecline;
+    //zarazony szybciej sie starzeje
+    if (covid) lifespan -= lifeDecline*5;
+    else lifespan -= lifeDecline;
+    //martwy nie zaraza
     if (isDead()) covid = false;
   }
 
@@ -44,7 +49,6 @@ class Particle {
 
   // Is the particle still useful?
   boolean isDead() {
-
     return (lifespan < 0.0);
   }
 }

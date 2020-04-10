@@ -1,3 +1,10 @@
+/*
+* Wieslaw 2020 dla Tamara
+* Creative Codin
+*
+* On mouse pressed it is adding new active covid to the World 
+*/
+
 ArrayList<Particle> particles;
 
 void setup() {
@@ -12,11 +19,13 @@ void setup() {
 void draw() {
   background(255);
 
+  //z pewnym prawdopodobienstwem dodaje nowy na koncu listy
   if (random(100) < 10) 
     particles.add(new Particle(new PVector(random(300, width-300), random(300, height-300))));
-
+  
+  //usuwa martwa z poczatku listy
   if (particles.get(0).isDead()) particles.remove(0);
-
+  //ile mamy na licie
   if (frameCount%100 == 0) println(particles.size());
 
   for (Particle p : particles) {
