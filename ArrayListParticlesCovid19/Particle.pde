@@ -13,12 +13,14 @@ class Particle {
   boolean covid;
   boolean exposed;
 
-  int covidTime;
-  int exposedTime;
+  float covidTime;
+  float exposedTime;
   boolean isDead;
 
   float maxspeed;
   float maxforce;
+
+  float r;
 
   Particle(PVector l) {
     acceleration = new PVector(random(-0.15, 0.15), random(-0.15, 0.15));
@@ -28,6 +30,8 @@ class Particle {
 
     maxspeed = 3;
     maxforce = 0.15;
+
+    r = 10;
 
     covid = false;
     exposed = false;
@@ -48,8 +52,8 @@ class Particle {
     if (exposed) exposedTime++;
     {
 
-      if (exposedTime>300) { 
-        //exposedTime=0; 
+      if (exposedTime>250) { 
+        exposedTime=0; 
         exposed = false;
       }
     }
@@ -60,41 +64,31 @@ class Particle {
     if (covid) covidTime++; 
     if (covidTime>250) { 
       if (random(100)<80) {
-        //covidTime = 0; 
+        covidTime = 0; 
         covid = false;
-        exposed = true && exposedTime > 250;
-        //else isDead = true;
       }
     }
   }
 
   void run() {
     update();
-    
+
     display();
-    
   }
 
-  // Method to update position
+
   void update() {
     velocity.add(acceleration);
     velocity.limit(maxspeed);
     position.add(velocity);
-    //if (position.x < 0 || position.x > width) velocity.x = -velocity.x;  
-    //if (position.y < 0 || position.y > height) velocity.y = -velocity.y;  
-    //zarazony szybciej sie starzeje
 
 
-    if (covid) lifespan -= lifeDecline*2;
-    else lifespan -= lifeDecline;
-    //martwy nie zaraza
     updateCovidTime();
     updateExposedTime();
 
+
     //if (isDead()) covid = false;
   }
-
-
 
 
   void boundaries() {
@@ -123,34 +117,61 @@ class Particle {
   }  
 
   void applyForce(PVector force) {
-    // We could add mass here if we want A = F / M
+
     acceleration.add(force);
   }
 
+  void applyBehaviors(ArrayList<Particle> particles) {
+    PVector separateForce = separate(particles);
 
-  // Method to display
+    separateForce.mult(10);
+
+    applyForce(separateForce);
+  }
+
+  PVector separate (ArrayList<Particle> particles) {
+    float desiredseparation = r*20;
+    PVector sum = new PVector();
+
+
+    for (Particle other : particles) {
+      float d = PVector.dist(position, other.position);
+
+
+      if (covid) { 
+        if (covidTime > 10) {
+          if (exposed) {
+            if (exposedTime > 20) {
+
+              if ((d > 0) && (d < desiredseparation)) {
+                
+                PVector diff = PVector.sub(position, other.position);
+                diff.normalize();
+                diff.div(d);        
+                sum.add(diff);
+              }
+            }
+          }
+        }
+      }
+    }
+    return sum;
+  }
+
+
   void display() {
     stroke(0);
     strokeWeight(2);
     if (exposed)
-      fill(#0C8FF0, lifespan);
+      fill(#0C8FF0);
 
     else if (covid) 
-      fill(255, 0, 0, lifespan);
+      fill(255, 0, 0);
     else if (isDead)
-      fill(0, 255, 0, lifespan);
+      fill(0, 255, 0);
     else
-      fill(127, lifespan);
+      fill(127);
 
     ellipse(position.x, position.y, 12, 12);
-  }
-
-
-
-
-
-  // Is the particle still useful?
-  boolean isDead() {
-    return (lifespan < 0.0);
   }
 }
