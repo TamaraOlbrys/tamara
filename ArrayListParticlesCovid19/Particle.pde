@@ -124,7 +124,7 @@ class Particle {
   void applyAvoid(ArrayList<Particle> particles) {
     PVector separateForce = separate(particles);
 
-    separateForce.mult(10);
+    separateForce.mult(5);
 
     applyForce(separateForce);
   }
@@ -140,8 +140,7 @@ class Particle {
 
       if (covid) { 
         if (covidTime > 10) {
-          if (exposed) {
-            if (exposedTime > 20) {
+          
 
               if ((d > 0) && (d < desiredseparation)) {
                 
@@ -153,8 +152,8 @@ class Particle {
             }
           }
         }
-      }
-    }
+      
+    
     return sum;
   }
 
