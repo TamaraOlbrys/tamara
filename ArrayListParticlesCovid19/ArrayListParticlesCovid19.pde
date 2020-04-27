@@ -28,7 +28,7 @@ void draw() {
 
   for (Particle p : particles) {
     p.boundaries();
-    p.applyBehaviors(particles);
+    p.applyAvoid(particles);
     p.run();
   }
 

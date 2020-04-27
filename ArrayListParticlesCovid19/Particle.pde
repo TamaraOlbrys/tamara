@@ -121,7 +121,7 @@ class Particle {
     acceleration.add(force);
   }
 
-  void applyBehaviors(ArrayList<Particle> particles) {
+  void applyAvoid(ArrayList<Particle> particles) {
     PVector separateForce = separate(particles);
 
     separateForce.mult(10);
