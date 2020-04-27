@@ -20,12 +20,12 @@ void setup() {
 void draw() {
   background(255);
 
-if (window) {
-    stroke(175);
+
+    noStroke();
     noFill();
     rectMode(CENTER);
     rect(width/2, height/2, width-bl*2, height-bl*2);
-  }
+  
   //z pewnym prawdopodobienstwem dodaje nowy na koncu listy
   //if (random(100) < 10) 
   //particles.add(new Particle(new PVector(random(300, width-300), random(300, height-300))));
