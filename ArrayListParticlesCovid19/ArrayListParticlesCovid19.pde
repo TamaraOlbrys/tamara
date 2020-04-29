@@ -30,6 +30,7 @@ void draw() {
     p.boundaries();
     p.applyAvoid(particles);
     p.run();
+    p.changeDirection();
   }
 
 

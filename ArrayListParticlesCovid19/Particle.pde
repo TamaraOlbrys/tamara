@@ -19,18 +19,24 @@ class Particle {
 
   float maxspeed;
   float maxforce;
+  
+  float hyperactivity;
+  float changeDirection;
+  
 
   float r;
 
   Particle(PVector l) {
     acceleration = new PVector(random(-0.15, 0.15), random(-0.15, 0.15));
-    velocity = new PVector(0, 0);
+    velocity = new PVector(random(-1,1),random(-1,1));
     velocity.mult(5);
     position = l.copy();
 
     maxspeed = 3;
     maxforce = 0.15;
-
+    hyperactivity = random(0,100);
+    //changeDirection = random(0,100);
+   
     r = 10;
 
     covid = false;
@@ -41,10 +47,10 @@ class Particle {
     exposedTime = 0;
 
     //max dlugosc rzycia
-    lifespan = 255;
+    //lifespan = 255;
     //jak szybko sie ztarzeje
 
-    lifeDecline = random(0.01, 0.1);
+    //lifeDecline = random(0.01, 0.1);
   }
 
 
@@ -82,7 +88,6 @@ class Particle {
     velocity.limit(maxspeed);
     position.add(velocity);
 
-
     updateCovidTime();
     updateExposedTime();
 
@@ -90,6 +95,14 @@ class Particle {
     //if (isDead()) covid = false;
   }
 
+  void changeDirection(){
+    
+    if (hyperactivity > 50 ) acceleration.x = -acceleration.x;
+      else acceleration.x = acceleration.x;
+    if (hyperactivity > 50 ) acceleration.y = -acceleration.y;
+    else acceleration.y = acceleration.y;
+    
+  }
 
   void boundaries() {
 
@@ -104,7 +117,7 @@ class Particle {
     if (position.y < bl) {
       desired = new PVector(velocity.x, maxspeed*0.5);
     } else if (position.y > height - bl) {
-      desired = new PVector(velocity .x, -maxspeed*0.5);
+      desired = new PVector(velocity.x, -maxspeed*0.5);
     } 
 
     if (desired != null) {
