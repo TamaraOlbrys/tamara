@@ -3,6 +3,7 @@
 //movment 
 
 //
+PGraphics pg;
 
 ArrayList<Particle> particles;
 //boolean window = true;
@@ -12,6 +13,12 @@ float bl =25;
 void setup() {
   frameRate(30);
   size(800, 800);
+  
+  pg = createGraphics(width, height);
+  pg.beginDraw();
+  pg.background(255);
+  pg.endDraw();
+  
   particles = new ArrayList<Particle>(100);
 
   while (particles.size() < 100) particles.add(new Particle(new PVector(random(300, width-300), random(300, height-300))));
@@ -31,6 +38,7 @@ void draw() {
     p.applyAvoid(particles);
     p.run();
     p.changeDirection();
+    p.trail(pg);
   }
 
 

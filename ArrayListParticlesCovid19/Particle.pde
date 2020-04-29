@@ -19,24 +19,26 @@ class Particle {
 
   float maxspeed;
   float maxforce;
-  
+
   float hyperactivity;
   float changeDirection;
-  
+
 
   float r;
 
-  Particle(PVector l) {
+  Particle(PVector l, PGraphics pg) {
     acceleration = new PVector(random(-0.15, 0.15), random(-0.15, 0.15));
-    velocity = new PVector(random(-1,1),random(-1,1));
+    velocity = new PVector(random(-1, 1), random(-1, 1));
     velocity.mult(5);
     position = l.copy();
-
+    
+    paint = pg;
+    
     maxspeed = 3;
     maxforce = 0.15;
-    hyperactivity = random(0,100);
+    hyperactivity = random(0, 100);
     //changeDirection = random(0,100);
-   
+
     r = 10;
 
     covid = false;
@@ -95,13 +97,11 @@ class Particle {
     //if (isDead()) covid = false;
   }
 
-  void changeDirection(){
-    
-    if (hyperactivity > 50 ) acceleration.x = -acceleration.x;
-      else acceleration.x = acceleration.x;
-    if (hyperactivity > 50 ) acceleration.y = -acceleration.y;
-    else acceleration.y = acceleration.y;
-    
+  void changeDirection() {
+
+    if (hyperactivity > 50 ) acceleration.rotate(random(-PI/4, PI/4));
+    //else acceleration.x = acceleration.x;
+    //else acceleration.y = acceleration.y;
   }
 
   void boundaries() {
@@ -153,20 +153,20 @@ class Particle {
 
       if (covid) { 
         if (covidTime > 10) {
-          
 
-              if ((d > 0) && (d < desiredseparation)) {
-                
-                PVector diff = PVector.sub(position, other.position);
-                diff.normalize();
-                diff.div(d);        
-                sum.add(diff);
-              }
-            }
+
+          if ((d > 0) && (d < desiredseparation)) {
+
+            PVector diff = PVector.sub(position, other.position);
+            diff.normalize();
+            diff.div(d);        
+            sum.add(diff);
           }
         }
-      
-    
+      }
+    }
+
+
     return sum;
   }
 
@@ -185,5 +185,27 @@ class Particle {
       fill(127);
 
     ellipse(position.x, position.y, 12, 12);
+  }
+
+  void trail(PGraphics pg) {
+    if (covid) 
+      pg.beginDraw();
+    pg.stroke(0, 20);
+    pg.strokeWeight(7);
+    //tylko pierwszy zostawia slad
+    pg.point(position.x, position.y);
+    pg.endDraw();
+    //w pg pamietany jest slad
+    image(pg, 0, 0);
+
+    if (exposed)
+      pg.beginDraw();
+    pg.stroke(0, 5);
+    pg.strokeWeight(5);
+    //tylko pierwszy zostawia slad
+    pg.point(position.x, position.y);
+    pg.endDraw();
+    //w pg pamietany jest slad
+    image(pg, 0, 0);
   }
 }
