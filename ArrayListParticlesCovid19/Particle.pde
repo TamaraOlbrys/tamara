@@ -7,8 +7,10 @@ class Particle {
   PVector position;
   PVector velocity;
   PVector acceleration;
-  float lifespan;
-  float lifeDecline;
+  //float lifespan;
+  //float lifeDecline;
+
+  PGraphics paint;
 
   boolean covid;
   boolean exposed;
@@ -19,6 +21,8 @@ class Particle {
 
   float maxspeed;
   float maxforce;
+  float z;
+  float a;
 
   float hyperactivity;
   float changeDirection;
@@ -31,15 +35,16 @@ class Particle {
     velocity = new PVector(random(-1, 1), random(-1, 1));
     velocity.mult(5);
     position = l.copy();
-    
+
     paint = pg;
-    
-    maxspeed = 3;
+
+    maxspeed = random(3, 5);
     maxforce = 0.15;
     hyperactivity = random(0, 100);
     //changeDirection = random(0,100);
-
-    r = 10;
+    z = 0;
+    a = 0;
+    r = 15;
 
     covid = false;
     exposed = false;
@@ -92,7 +97,7 @@ class Particle {
 
     updateCovidTime();
     updateExposedTime();
-
+    death();
 
     //if (isDead()) covid = false;
   }
@@ -100,6 +105,13 @@ class Particle {
   void changeDirection() {
 
     if (hyperactivity > 50 ) acceleration.rotate(random(-PI/4, PI/4));
+
+
+    if (covid) {
+      if (hyperactivity>15) {
+        acceleration.rotate(random(-PI/3, PI/3));
+      }
+    }
     //else acceleration.x = acceleration.x;
     //else acceleration.y = acceleration.y;
   }
@@ -134,6 +146,20 @@ class Particle {
     acceleration.add(force);
   }
 
+  void death() {
+    PVector death = null;
+    if (covid) {
+      if (covidTime >250) {
+        if (random(100)<10) {
+
+          death.mult(0); 
+          
+          isDead = true;
+        }
+      }
+    }
+  }
+
   void applyAvoid(ArrayList<Particle> particles) {
     PVector separateForce = separate(particles);
 
@@ -143,19 +169,45 @@ class Particle {
   }
 
   PVector separate (ArrayList<Particle> particles) {
-    float desiredseparation = r*20;
+    float desiredseparation = r;
+    float desiredseparationCovid = 50;
+    float desiredseparationExposed = 30;
+
     PVector sum = new PVector();
 
 
     for (Particle other : particles) {
       float d = PVector.dist(position, other.position);
 
+      if ((d > 0) && (d < desiredseparation)) {
+
+        PVector diff = PVector.sub(position, other.position);
+        diff.normalize();
+        diff.div(d);        
+        sum.add(diff);
+      }
+
 
       if (covid) { 
         if (covidTime > 10) {
 
 
-          if ((d > 0) && (d < desiredseparation)) {
+          if ((d > 0) && (d < desiredseparationCovid)) {
+
+            PVector diff = PVector.sub(position, other.position);
+            diff.normalize();
+            diff.div(d);        
+            sum.add(diff);
+          }
+        }
+      }
+
+
+      if (exposed) { 
+        if (exposedTime > 20) {
+
+
+          if ((d > 0) && (d < desiredseparationExposed)) {
 
             PVector diff = PVector.sub(position, other.position);
             diff.normalize();
@@ -187,25 +239,25 @@ class Particle {
     ellipse(position.x, position.y, 12, 12);
   }
 
-  void trail(PGraphics pg) {
-    if (covid) 
-      pg.beginDraw();
-    pg.stroke(0, 20);
-    pg.strokeWeight(7);
-    //tylko pierwszy zostawia slad
-    pg.point(position.x, position.y);
-    pg.endDraw();
-    //w pg pamietany jest slad
-    image(pg, 0, 0);
 
-    if (exposed)
-      pg.beginDraw();
-    pg.stroke(0, 5);
-    pg.strokeWeight(5);
-    //tylko pierwszy zostawia slad
-    pg.point(position.x, position.y);
-    pg.endDraw();
-    //w pg pamietany jest slad
-    image(pg, 0, 0);
+
+  void trail() {
+    if (covid) { 
+      paint.beginDraw();
+      paint.stroke(255, 0, 0, 10);
+      paint.strokeWeight(7);
+      //tylko pierwszy zostawia slad
+      paint.point(position.x, position.y);
+      paint.endDraw();
+    }
+
+    if (exposed) {
+      paint.beginDraw();
+      paint.stroke(#0C8FF0, 10);
+      paint.strokeWeight(5);
+      //tylko pierwszy zostawia slad
+      paint.point(position.x, position.y);
+      paint.endDraw();
+    }
   }
 }

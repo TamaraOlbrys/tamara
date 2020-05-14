@@ -1,44 +1,37 @@
-// where do you i update distance once infected or exposed
-//pGraphics
-//movment 
 
-//
 PGraphics pg;
 
 ArrayList<Particle> particles;
 //boolean window = true;
-float bl =25;
+float bl =2;
 
 //bl = boundarylimit
 void setup() {
   frameRate(30);
   size(800, 800);
-  
+
   pg = createGraphics(width, height);
   pg.beginDraw();
   pg.background(255);
   pg.endDraw();
-  
+
   particles = new ArrayList<Particle>(100);
 
-  while (particles.size() < 100) particles.add(new Particle(new PVector(random(300, width-300), random(300, height-300))));
+  while (particles.size() < 100) particles.add(new Particle(new PVector(random(300, width-300), random(300, height-300)), pg));
 }
 
 void draw() {
   background(255);
-
-  noStroke();
-  noFill();
-  rectMode(CENTER);
-  rect(width/2, height/2, width-bl*2, height-bl*2);
-
-
+  image(pg, 0, 0); 
+  
+ 
   for (Particle p : particles) {
     p.boundaries();
     p.applyAvoid(particles);
     p.run();
     p.changeDirection();
-    p.trail(pg);
+    p.trail();
+    
   }
 
 
@@ -65,11 +58,13 @@ void draw() {
         }
       }
     }
+
+  
 }
 
 
 void mousePressed() {
-  Particle c = new Particle(new PVector(width/2, height/2));
+  Particle c = new Particle(new PVector(width/2, height/2), pg);
   c.covid = true;
   c.exposed = false;
   c.covidTime = 1;
