@@ -7,8 +7,7 @@ class Particle {
   PVector position;
   PVector velocity;
   PVector acceleration;
-  //float lifespan;
-  //float lifeDecline;
+
 
   PGraphics paint;
 
@@ -21,8 +20,7 @@ class Particle {
 
   float maxspeed;
   float maxforce;
-  float z;
-  float a;
+
 
   float hyperactivity;
   float changeDirection;
@@ -42,8 +40,7 @@ class Particle {
     maxforce = 0.15;
     hyperactivity = random(0, 100);
     //changeDirection = random(0,100);
-    z = 0;
-    a = 0;
+
     r = 15;
 
     covid = false;
@@ -52,14 +49,24 @@ class Particle {
 
     covidTime = 0;
     exposedTime = 0;
-
-    //max dlugosc rzycia
-    //lifespan = 255;
-    //jak szybko sie ztarzeje
-
-    //lifeDecline = random(0.01, 0.1);
   }
 
+  void run() {
+    update();
+    boundaries();
+    updateCovidTime();
+    updateExposedTime();
+    applyAvoid(particles);
+    changeDirection();
+
+    display();
+  }
+
+  void update() {
+    velocity.add(acceleration);
+    velocity.limit(maxspeed);
+    position.add(velocity);
+  }
 
   void updateExposedTime() {
     if (exposed) exposedTime++;
@@ -72,7 +79,6 @@ class Particle {
     }
   }
 
-
   void updateCovidTime() {
     if (covid) covidTime++; 
     if (covidTime>250) { 
@@ -80,27 +86,20 @@ class Particle {
         covidTime = 0; 
         covid = false;
       }
+
+      if (random(100)<10) {
+        covidTime = 0; 
+        covid = false;
+        isDead = true;
+      }
+
+      if (isDead) {
+        acceleration.x = 0;
+        acceleration.y = 0;
+      }
     }
   }
 
-  void run() {
-    update();
-
-    display();
-  }
-
-
-  void update() {
-    velocity.add(acceleration);
-    velocity.limit(maxspeed);
-    position.add(velocity);
-
-    updateCovidTime();
-    updateExposedTime();
-    death();
-
-    //if (isDead()) covid = false;
-  }
 
   void changeDirection() {
 
@@ -112,9 +111,9 @@ class Particle {
         acceleration.rotate(random(-PI/3, PI/3));
       }
     }
-    //else acceleration.x = acceleration.x;
-    //else acceleration.y = acceleration.y;
   }
+
+
 
   void boundaries() {
 
@@ -146,19 +145,7 @@ class Particle {
     acceleration.add(force);
   }
 
-  void death() {
-    PVector death = null;
-    if (covid) {
-      if (covidTime >250) {
-        if (random(100)<10) {
 
-          death.mult(0); 
-          
-          isDead = true;
-        }
-      }
-    }
-  }
 
   void applyAvoid(ArrayList<Particle> particles) {
     PVector separateForce = separate(particles);

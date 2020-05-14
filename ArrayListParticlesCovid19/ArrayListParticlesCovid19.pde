@@ -3,7 +3,7 @@ PGraphics pg;
 
 ArrayList<Particle> particles;
 //boolean window = true;
-float bl =2;
+float bl = 2;
 
 //bl = boundarylimit
 void setup() {
@@ -23,15 +23,12 @@ void setup() {
 void draw() {
   background(255);
   image(pg, 0, 0); 
-  
- 
+
+
   for (Particle p : particles) {
-    p.boundaries();
-    p.applyAvoid(particles);
+
     p.run();
-    p.changeDirection();
     p.trail();
-    
   }
 
 
@@ -39,7 +36,7 @@ void draw() {
   for (Particle p1 : particles) 
     for (Particle p2 : particles) {
 
-      if (p1.position.dist(p2.position) < 12) 
+      if (p1.position.dist(p2.position) < 15) 
 
 
       { 
@@ -58,8 +55,6 @@ void draw() {
         }
       }
     }
-
-  
 }
 
 
