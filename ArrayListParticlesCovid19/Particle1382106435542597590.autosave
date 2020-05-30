@@ -63,15 +63,9 @@ class Particle {
   }
 
   void update() {
-     if (isDead) {
-        velocity.x = 0;
-        velocity.y = 0;
-      } else
-      {
     velocity.add(acceleration);
     velocity.limit(maxspeed);
     position.add(velocity);
-      }
   }
 
   void updateExposedTime() {
@@ -99,7 +93,10 @@ class Particle {
         isDead = true;
       }
 
-     
+      if (isDead) {
+        acceleration.x = 0;
+        acceleration.y = 0;
+      }
     }
   }
 
@@ -222,7 +219,7 @@ class Particle {
     else if (covid) 
       fill(255, 0, 0);
     else if (exposed)
-      fill(#0C8FF0);
+      fill(0,0,255);
     else
       fill(127);
 

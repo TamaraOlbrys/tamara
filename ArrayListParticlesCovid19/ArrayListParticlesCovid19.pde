@@ -36,7 +36,7 @@ void draw() {
   for (Particle p1 : particles) 
     for (Particle p2 : particles) {
 
-      if (p1.position.dist(p2.position) < 15) 
+      if (p1.position.dist(p2.position) < 12) 
 
 
       { 
